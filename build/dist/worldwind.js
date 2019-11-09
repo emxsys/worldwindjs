@@ -40432,6 +40432,10 @@ define('shapes/ScreenText',[
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/*
+ * NOTICE: This file was modified from the original NASAWorldWind/WebWorldWind distribution.
+ * NOTICE: This file contains changes made by Cédric Bodet <cedric.bodet@futurice.com>.
+ */
 /**
  * @exports CoordinatesDisplayLayer
  */
@@ -40612,11 +40616,6 @@ define('layer/CoordinatesDisplayLayer',[
                 this.eyeText.render(dc);
             }
 
-            // TODO can we control crosshair visibility by adding targetVisibility to ScreenImage?
-            if (this.eventType === "touch") {
-                this.crosshairImage.render(dc);
-            }
-
             this.inCurrentFrame = true;
         };
 
@@ -40691,6 +40690,7 @@ define('layer/CoordinatesDisplayLayer',[
 
         return CoordinatesDisplayLayer;
     });
+
 /*
  * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
  * National Aeronautics and Space Administration. All rights reserved.

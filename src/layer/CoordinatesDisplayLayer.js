@@ -14,6 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/*
+ * NOTICE: This file was modified from the original NASAWorldWind/WebWorldWind distribution.
+ * NOTICE: This file contains changes made by Cédric Bodet <cedric.bodet@futurice.com>.
+ */
 /**
  * @exports CoordinatesDisplayLayer
  */
@@ -192,11 +196,6 @@ define([
                 this.eyeText.screenOffset = new Offset(WorldWind.OFFSET_PIXELS, x, yUnitsScreen, y);
                 this.eyeText.attributes.offset = new Offset(WorldWind.OFFSET_FRACTION, 0, WorldWind.OFFSET_FRACTION, yUnitsText);
                 this.eyeText.render(dc);
-            }
-
-            // TODO can we control crosshair visibility by adding targetVisibility to ScreenImage?
-            if (this.eventType === "touch") {
-                this.crosshairImage.render(dc);
             }
 
             this.inCurrentFrame = true;

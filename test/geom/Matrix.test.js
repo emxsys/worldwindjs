@@ -5,9 +5,9 @@
  * The NASAWorldWind/WebWorldWind platform is licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -750,7 +750,7 @@ define([
                 matrix.setToPerspectiveProjection(viewportWidth, viewportHeight, fieldOfView, nearDistance, farDistance);
 
                 // FOV based approach gives another test result then old perspectiveFrustumRectangle based calculation
-                expect(matrix[0]).toEqual(1.931370849898476);
+                expect(matrix[0]).toEqual(1.9313708498984758);
                 expect(matrix[1]).toEqual(0);
                 expect(matrix[2]).toEqual(0);
                 expect(matrix[3]).toEqual(0);
