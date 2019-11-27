@@ -307,14 +307,17 @@ define([
             if (!this.activeAttributes) {
                 return null;
             }
-
             //// Compute the text's screen point and distance to the eye point.
             if (!this.computeScreenPointAndEyeDistance(dc)) {
                 return null;
             }
-
-            this.activeTexture = dc.createTextTexture(this.text, this.activeAttributes);
-
+            var labelFont = this.activeAttributes.font,
+                textureKey = this.text + labelFont.toString();
+            this.activeTexture = dc.gpuResourceCache.resourceForKey(textureKey);
+            if (!this.activeTexture) {
+                this.activeTexture = dc.textSupport.createTexture(dc, this.text, labelFont, true);
+                dc.gpuResourceCache.putResource(textureKey, this.activeTexture, this.activeTexture.size, true /*volatile*/);
+            }
             w = this.activeTexture.imageWidth;
             h = this.activeTexture.imageHeight;
             s = this.activeAttributes.scale;

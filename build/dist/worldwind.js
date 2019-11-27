@@ -26289,6 +26289,8 @@ define('cache/MemoryCache',[
               Logger) {
         "use strict";
 
+        var MEMORY_CACHE_VOLATILE_BIAS = 60e3;   // in milliseconds
+
         /**
          * Constructs a memory cache of a specified size.
          * @alias MemoryCache
@@ -26408,9 +26410,8 @@ define('cache/MemoryCache',[
             var cacheEntry = this.entries[key];
             if (!cacheEntry)
                 return null;
-
-            cacheEntry.lastUsed = Date.now();
-
+            cacheEntry.lastUsed = cacheEntry.isVolatile ? Date.now() - MEMORY_CACHE_VOLATILE_BIAS : Date.now();   // milliseconds
+            cacheEntry.retrievedCount++;
             return cacheEntry.entry;
         };
 
@@ -26419,10 +26420,11 @@ define('cache/MemoryCache',[
          * @param {String} key The entry's key.
          * @param {Object} entry The entry.
          * @param {Number} size The entry's size.
+         * @param {Boolean} isVolatile Applies the volatile bias to the lastUsed field
          * @throws {ArgumentError} If the specified key or entry is null or undefined or the specified size is less
          * than 1.
          */
-        MemoryCache.prototype.putEntry = function (key, entry, size) {
+        MemoryCache.prototype.putEntry = function (key, entry, size, isVolatile) {
             if (!key) {
                 throw new ArgumentError(
                     Logger.logMessage(Logger.LEVEL_SEVERE, "MemoryCache", "putEntry", "missingKey."));
@@ -26452,12 +26454,14 @@ define('cache/MemoryCache',[
 
             this.usedCapacity += size;
             this.freeCapacity = this._capacity - this.usedCapacity;
-
+            // BDS: added isVolatile property
             cacheEntry = {
                 key: key,
                 entry: entry,
                 size: size,
-                lastUsed: Date.now(),
+                lastUsed: isVolatile ? Date.now() - MEMORY_CACHE_VOLATILE_BIAS : Date.now(), // milliseconds
+                isVolatile: !!isVolatile,
+                retrievedCount: 0,
                 agingFactor: 1  // 1x = normal aging
             };
 
@@ -26614,6 +26618,7 @@ define('cache/MemoryCache',[
 
         return MemoryCache;
     });
+
 /*
  * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
  * National Aeronautics and Space Administration. All rights reserved.
@@ -29137,7 +29142,8 @@ define('util/WmsUrlBuilder',[
                 sb = sb + sector.maxLongitude+ "," + sector.maxLatitude;
             }
 
-            sb = sb.replace(" ", "%20");
+            // Global replace space
+            sb = sb.replace(/\s/g, "%20");
 
             return sb;
         };
@@ -29166,6 +29172,7 @@ define('util/WmsUrlBuilder',[
 
         return WmsUrlBuilder;
     });
+
 /*
  * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
  * National Aeronautics and Space Administration. All rights reserved.
@@ -37002,13 +37009,14 @@ define('util/LevelRowColumnUrlBuilder',[
             sb = sb + "/" + tile.row.toString() + "_" + tile.column.toString();
             sb = sb + "." + WWUtil.suffixForMimeType(imageFormat);
 
-            sb = sb.replace(" ", "%20");
-
+            // Global replace space
+            sb = sb.replace(/\s/g, "%20");
             return sb;
         };
 
         return LevelRowColumnUrlBuilder;
     });
+
 /*
  * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
  * National Aeronautics and Space Administration. All rights reserved.
@@ -40077,14 +40085,17 @@ define('shapes/Text',[
             if (!this.activeAttributes) {
                 return null;
             }
-
             //// Compute the text's screen point and distance to the eye point.
             if (!this.computeScreenPointAndEyeDistance(dc)) {
                 return null;
             }
-
-            this.activeTexture = dc.createTextTexture(this.text, this.activeAttributes);
-
+            var labelFont = this.activeAttributes.font,
+                textureKey = this.text + labelFont.toString();
+            this.activeTexture = dc.gpuResourceCache.resourceForKey(textureKey);
+            if (!this.activeTexture) {
+                this.activeTexture = dc.textSupport.createTexture(dc, this.text, labelFont, true);
+                dc.gpuResourceCache.putResource(textureKey, this.activeTexture, this.activeTexture.size, true /*volatile*/);
+            }
             w = this.activeTexture.imageWidth;
             h = this.activeTexture.imageHeight;
             s = this.activeAttributes.scale;
@@ -40322,6 +40333,7 @@ define('shapes/Text',[
 
         return Text;
     });
+
 /*
  * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
  * National Aeronautics and Space Administration. All rights reserved.
@@ -45590,10 +45602,11 @@ define('cache/GpuResourceCache',[
          * @param {String|ImageSource} key The key or image source of the resource to add.
          * @param {Object} resource The resource to add to the cache.
          * @param {Number} size The resource's size in bytes. Must be greater than 0.
+         * @param {Boolean} isVolatile Applies the volatile bias to the lastUsed field
          * @throws {ArgumentError} If either the key or resource arguments is null or undefined
          * or if the specified size is less than 1.
          */
-        GpuResourceCache.prototype.putResource = function (key, resource, size) {
+        GpuResourceCache.prototype.putResource = function (key, resource, size, isVolatile) {
             if (!key) {
                 throw new ArgumentError(
                     Logger.logMessage(Logger.LEVEL_SEVERE, "GpuResourceCache", "putResource", "missingKey."));
@@ -45614,7 +45627,7 @@ define('cache/GpuResourceCache',[
                 resource: resource
             };
 
-            this.entries.putEntry(key instanceof ImageSource ? key.key : key, entry, size);
+            this.entries.putEntry(key instanceof ImageSource ? key.key : key, entry, size, isVolatile);
         };
 
         /**
@@ -45636,7 +45649,7 @@ define('cache/GpuResourceCache',[
 
             return resource;
         };
-        
+
         /**
          * Sets a resource's aging factor (multiplier).
          * @param {String} key The key of the resource to modify. If null or undefined, the resource's cache entry is not modified.
@@ -45734,6 +45747,7 @@ define('cache/GpuResourceCache',[
 
         return GpuResourceCache;
     });
+
 /*
  * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
  * National Aeronautics and Space Administration. All rights reserved.
@@ -48249,28 +48263,12 @@ define('shapes/SurfaceShapeTile',[
                 shape.renderToTexture(dc, ctx2D, xScale, yScale, xOffset, yOffset);
             }
 
-            // Remove semi-transparent pixels, which may contain wrong pick color due to anti-aliasing
-            // TODO Disable anti-aliasing of canvas stroke in renderToTexture instead of this hack, when it will be supported by browsers
-            if (dc.pickingMode) {
-                var imageData = ctx2D.getImageData(0, 0, canvas.width, canvas.height);
-                for (var i = 3, n = canvas.width * canvas.height * 4; i < n; i += 4) {
-                    if (imageData.data[i] < 255) {
-                        imageData.data[i - 3] = 0;
-                        imageData.data[i - 2] = 0;
-                        imageData.data[i - 1] = 0;
-                        imageData.data[i] = 0;
-                    }
-                }
-                ctx2D.putImageData(imageData, 0, 0);
-            }
-
             this.gpuCacheKey = this.getCacheKey();
 
             var gpuResourceCache = dc.gpuResourceCache;
-            var texture = new Texture(gl, canvas);
-            gpuResourceCache.putResource(this.gpuCacheKey, texture, texture.size);
-            gpuResourceCache.setResourceAgingFactor(this.gpuCacheKey, 10);   // age this texture 10x faster than normal resources (e.g., tiles)
-            
+            var texture = new WorldWind.Texture(gl, canvas);
+            gpuResourceCache.putResource(this.gpuCacheKey, texture, texture.size, true /*isVolatile*/);
+
             return texture;
         };
 
@@ -48309,6 +48307,7 @@ define('shapes/SurfaceShapeTile',[
         return SurfaceShapeTile;
     }
 );
+
 /*
  * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
  * National Aeronautics and Space Administration. All rights reserved.
@@ -70302,7 +70301,7 @@ define('util/NominatimGeocoder',[
          * to obtain a key.
          */
         NominatimGeocoder.prototype.lookup = function (queryString, callback, accessKey) {
-            var url = this.service + queryString.replace(" ", "%20") + "?format=json",
+            var url = this.service + queryString.replace(/\s/g, "%20") + "?format=json",
                 xhr = new XMLHttpRequest(),
                 thisGeocoder = this;
 
@@ -70323,6 +70322,7 @@ define('util/NominatimGeocoder',[
 
         return NominatimGeocoder;
     });
+
 /*
  * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
  * National Aeronautics and Space Administration. All rights reserved.
@@ -86486,7 +86486,8 @@ define('util/WcsTileUrlBuilder',[
             sb = sb + sector.minLongitude + "," + sector.minLatitude + ",";
             sb = sb + sector.maxLongitude + "," +sector. maxLatitude;
 
-            sb = sb.replace(" ", "%20");
+            // Global replace space
+            sb = sb.replace(/\s/g, "%20");
 
             return sb;
         };

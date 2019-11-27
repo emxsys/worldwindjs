@@ -156,7 +156,8 @@ define([
                 sb = sb + sector.maxLongitude+ "," + sector.maxLatitude;
             }
 
-            sb = sb.replace(" ", "%20");
+            // Global replace space
+            sb = sb.replace(/\s/g, "%20");
 
             return sb;
         };

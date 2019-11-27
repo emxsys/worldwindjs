@@ -135,10 +135,11 @@ define([
          * @param {String|ImageSource} key The key or image source of the resource to add.
          * @param {Object} resource The resource to add to the cache.
          * @param {Number} size The resource's size in bytes. Must be greater than 0.
+         * @param {Boolean} isVolatile Applies the volatile bias to the lastUsed field
          * @throws {ArgumentError} If either the key or resource arguments is null or undefined
          * or if the specified size is less than 1.
          */
-        GpuResourceCache.prototype.putResource = function (key, resource, size) {
+        GpuResourceCache.prototype.putResource = function (key, resource, size, isVolatile) {
             if (!key) {
                 throw new ArgumentError(
                     Logger.logMessage(Logger.LEVEL_SEVERE, "GpuResourceCache", "putResource", "missingKey."));
@@ -159,7 +160,7 @@ define([
                 resource: resource
             };
 
-            this.entries.putEntry(key instanceof ImageSource ? key.key : key, entry, size);
+            this.entries.putEntry(key instanceof ImageSource ? key.key : key, entry, size, isVolatile);
         };
 
         /**
@@ -181,7 +182,7 @@ define([
 
             return resource;
         };
-        
+
         /**
          * Sets a resource's aging factor (multiplier).
          * @param {String} key The key of the resource to modify. If null or undefined, the resource's cache entry is not modified.

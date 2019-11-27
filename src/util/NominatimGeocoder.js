@@ -50,7 +50,7 @@ define([
          * to obtain a key.
          */
         NominatimGeocoder.prototype.lookup = function (queryString, callback, accessKey) {
-            var url = this.service + queryString.replace(" ", "%20") + "?format=json",
+            var url = this.service + queryString.replace(/\s/g, "%20") + "?format=json",
                 xhr = new XMLHttpRequest(),
                 thisGeocoder = this;
 

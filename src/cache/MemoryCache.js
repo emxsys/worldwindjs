@@ -25,6 +25,8 @@ define([
               Logger) {
         "use strict";
 
+        var MEMORY_CACHE_VOLATILE_BIAS = 60e3;   // in milliseconds
+
         /**
          * Constructs a memory cache of a specified size.
          * @alias MemoryCache
@@ -144,9 +146,8 @@ define([
             var cacheEntry = this.entries[key];
             if (!cacheEntry)
                 return null;
-
-            cacheEntry.lastUsed = Date.now();
-
+            cacheEntry.lastUsed = cacheEntry.isVolatile ? Date.now() - MEMORY_CACHE_VOLATILE_BIAS : Date.now();   // milliseconds
+            cacheEntry.retrievedCount++;
             return cacheEntry.entry;
         };
 
@@ -155,10 +156,11 @@ define([
          * @param {String} key The entry's key.
          * @param {Object} entry The entry.
          * @param {Number} size The entry's size.
+         * @param {Boolean} isVolatile Applies the volatile bias to the lastUsed field
          * @throws {ArgumentError} If the specified key or entry is null or undefined or the specified size is less
          * than 1.
          */
-        MemoryCache.prototype.putEntry = function (key, entry, size) {
+        MemoryCache.prototype.putEntry = function (key, entry, size, isVolatile) {
             if (!key) {
                 throw new ArgumentError(
                     Logger.logMessage(Logger.LEVEL_SEVERE, "MemoryCache", "putEntry", "missingKey."));
@@ -188,12 +190,14 @@ define([
 
             this.usedCapacity += size;
             this.freeCapacity = this._capacity - this.usedCapacity;
-
+            // BDS: added isVolatile property
             cacheEntry = {
                 key: key,
                 entry: entry,
                 size: size,
-                lastUsed: Date.now(),
+                lastUsed: isVolatile ? Date.now() - MEMORY_CACHE_VOLATILE_BIAS : Date.now(), // milliseconds
+                isVolatile: !!isVolatile,
+                retrievedCount: 0,
                 agingFactor: 1  // 1x = normal aging
             };
 
