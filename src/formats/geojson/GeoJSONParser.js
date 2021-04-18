@@ -608,6 +608,12 @@ define(['../../error/ArgumentError',
                 if (configuration.highlightAttributes) {
                     placemark.highlightAttributes = configuration.highlightAttributes;
                 }
+                if (configuration.imageRotation) {
+                    placemark.imageRotation = configuration.imageRotation;
+                }
+                if (configuration.imageRotationReference) {
+                    placemark.imageRotation = configuration.imageRotationReference;
+                }
                 if (configuration && configuration.pickDelegate) {
                     placemark.pickDelegate = configuration.pickDelegate;
                 }
