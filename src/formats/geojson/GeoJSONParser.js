@@ -602,23 +602,26 @@ define(['../../error/ArgumentError',
                     configuration && configuration.attributes ? configuration.attributes : null);
 
                 placemark.altitudeMode = WorldWind.RELATIVE_TO_GROUND;
+                if (configuration && configuration.altitudeMode) {
+                    placemark.altitudeMode = configuration.altitudeMode;
+                }
                 if (configuration && configuration.name){
                     placemark.label = configuration.name;
                 }
-                if (configuration.eyeDistanceScaling) {
+                if (configuration && configuration.eyeDistanceScaling) {
                     placemark.eyeDistanceScaling = configuration.eyeDistanceScaling;
                 }
-                if (configuration.eyeDistanceScalingThreshold) {
+                if (configuration && configuration.eyeDistanceScalingThreshold) {
                     placemark.eyeDistanceScalingThreshold = configuration.eyeDistanceScalingThreshold;
                 }
-                if (configuration.highlightAttributes) {
+                if (configuration && configuration.highlightAttributes) {
                     placemark.highlightAttributes = configuration.highlightAttributes;
                 }
-                if (configuration.imageRotation) {
+                if (configuration && configuration.imageRotation) {
                     placemark.imageRotation = configuration.imageRotation;
                 }
-                if (configuration.imageRotationReference) {
-                    placemark.imageRotation = configuration.imageRotationReference;
+                if (configuration && configuration.imageRotationReference) {
+                    placemark.imageRotationReference = configuration.imageRotationReference;
                 }
                 if (configuration && configuration.pickDelegate) {
                     placemark.pickDelegate = configuration.pickDelegate;
