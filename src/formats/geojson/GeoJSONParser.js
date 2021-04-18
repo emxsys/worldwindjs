@@ -866,20 +866,20 @@ define(['../../error/ArgumentError',
                     for (var positionIndex = 0, points = boundaries[boundariesIndex];
                          positionIndex < points.length; positionIndex++) {
                         var longitude = points[positionIndex][0],
-                            latitude = points[positionIndex][1];
-                        //altitude = points[positionIndex][2] ?  points[positionIndex][2] : 0,
+                            latitude = points[positionIndex][1],
+                            altitude = points[positionIndex][2] ?  points[positionIndex][2] : 0;
                         var reprojectedCoordinate = this.getReprojectedIfRequired(
                             latitude,
                             longitude,
                             this.crs);
-                        var position = new Location(reprojectedCoordinate[1], reprojectedCoordinate[0]);
+                        var position = new Position(reprojectedCoordinate[1], reprojectedCoordinate[0], altitude);
                         positions.push(position);
                     }
                     pBoundaries.push(positions);
                 }
 
                     var shape;
-                    shape = new SurfacePolygon(
+                    shape = new Polygon(
                         pBoundaries,
                         configuration && configuration.attributes ? configuration.attributes : null);
                     if (configuration.highlightAttributes) {
