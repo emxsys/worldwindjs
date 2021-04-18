@@ -605,6 +605,12 @@ define(['../../error/ArgumentError',
                 if (configuration && configuration.name){
                     placemark.label = configuration.name;
                 }
+                if (configuration.eyeDistanceScaling) {
+                    placemark.eyeDistanceScaling = configuration.eyeDistanceScaling;
+                }
+                if (configuration.eyeDistanceScalingThreshold) {
+                    placemark.eyeDistanceScalingThreshold = configuration.eyeDistanceScalingThreshold;
+                }
                 if (configuration.highlightAttributes) {
                     placemark.highlightAttributes = configuration.highlightAttributes;
                 }
