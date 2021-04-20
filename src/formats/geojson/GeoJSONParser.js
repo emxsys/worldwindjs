@@ -602,11 +602,26 @@ define(['../../error/ArgumentError',
                     configuration && configuration.attributes ? configuration.attributes : null);
 
                 placemark.altitudeMode = WorldWind.RELATIVE_TO_GROUND;
+                if (configuration && configuration.altitudeMode) {
+                    placemark.altitudeMode = configuration.altitudeMode;
+                }
                 if (configuration && configuration.name){
                     placemark.label = configuration.name;
                 }
-                if (configuration.highlightAttributes) {
+                if (configuration && configuration.eyeDistanceScaling) {
+                    placemark.eyeDistanceScaling = configuration.eyeDistanceScaling;
+                }
+                if (configuration && configuration.eyeDistanceScalingThreshold) {
+                    placemark.eyeDistanceScalingThreshold = configuration.eyeDistanceScalingThreshold;
+                }
+                if (configuration && configuration.highlightAttributes) {
                     placemark.highlightAttributes = configuration.highlightAttributes;
+                }
+                if (configuration && configuration.imageRotation) {
+                    placemark.imageRotation = configuration.imageRotation;
+                }
+                if (configuration && configuration.imageRotationReference) {
+                    placemark.imageRotationReference = configuration.imageRotationReference;
                 }
                 if (configuration && configuration.pickDelegate) {
                     placemark.pickDelegate = configuration.pickDelegate;
@@ -662,11 +677,26 @@ define(['../../error/ArgumentError',
                         false,
                         configuration && configuration.attributes ? configuration.attributes : null);
                     placemark.altitudeMode = WorldWind.RELATIVE_TO_GROUND;
+                    if (configuration && configuration.altitudeMode) {
+                        placemark.altitudeMode = configuration.altitudeMode;
+                    }
                     if (configuration && configuration.name){
                         placemark.label = configuration.name;
                     }
+                    if (configuration && configuration.eyeDistanceScaling) {
+                        placemark.eyeDistanceScaling = configuration.eyeDistanceScaling;
+                    }
+                    if (configuration && configuration.eyeDistanceScalingThreshold) {
+                        placemark.eyeDistanceScalingThreshold = configuration.eyeDistanceScalingThreshold;
+                    }
                     if (configuration.highlightAttributes) {
                         placemark.highlightAttributes = configuration.highlightAttributes;
+                    }
+                    if (configuration && configuration.imageRotation) {
+                        placemark.imageRotation = configuration.imageRotation;
+                    }
+                    if (configuration && configuration.imageRotationReference) {
+                        placemark.imageRotationReference = configuration.imageRotationReference;
                     }
                     if (configuration && configuration.pickDelegate) {
                         placemark.pickDelegate = configuration.pickDelegate;
@@ -836,20 +866,20 @@ define(['../../error/ArgumentError',
                     for (var positionIndex = 0, points = boundaries[boundariesIndex];
                          positionIndex < points.length; positionIndex++) {
                         var longitude = points[positionIndex][0],
-                            latitude = points[positionIndex][1];
-                        //altitude = points[positionIndex][2] ?  points[positionIndex][2] : 0,
+                            latitude = points[positionIndex][1],
+                            altitude = points[positionIndex][2] ?  points[positionIndex][2] : 0;
                         var reprojectedCoordinate = this.getReprojectedIfRequired(
                             latitude,
                             longitude,
                             this.crs);
-                        var position = new Location(reprojectedCoordinate[1], reprojectedCoordinate[0]);
+                        var position = new Position(reprojectedCoordinate[1], reprojectedCoordinate[0], altitude);
                         positions.push(position);
                     }
                     pBoundaries.push(positions);
                 }
 
                     var shape;
-                    shape = new SurfacePolygon(
+                    shape = new Polygon(
                         pBoundaries,
                         configuration && configuration.attributes ? configuration.attributes : null);
                     if (configuration.highlightAttributes) {
