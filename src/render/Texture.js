@@ -64,6 +64,13 @@ define([
                 wrapMode = gl.CLAMP_TO_EDGE;
             }
 
+            // Set image width and height if not set.
+            // For example, Font Awesome SVGs do not have width or height set.
+            if (typeof(image.width) !== "number" || image.width <= 0)
+              image.width = 32;
+            if (typeof(image.height) !== "number" || image.height <= 0)
+              image.height = 32;
+
             var textureId = gl.createTexture(),
                 isPowerOfTwo = (WWMath.isPowerOfTwo(image.width) && WWMath.isPowerOfTwo(image.height));
 
