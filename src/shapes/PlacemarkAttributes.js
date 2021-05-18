@@ -56,10 +56,12 @@ define([
         var PlacemarkAttributes = function (attributes) {
             // These are all documented with their property accessors below.
             this._imageColor = attributes ? attributes._imageColor.clone() : Color.WHITE.clone();
+            this._imageH = attributes ? attributes._imageH : null;
             this._imageOffset = attributes ? attributes._imageOffset
                 : new Offset(WorldWind.OFFSET_FRACTION, 0.5, WorldWind.OFFSET_FRACTION, 0.5);
             this._imageScale = attributes ? attributes._imageScale : 1;
             this._imageSource = attributes ? attributes._imageSource : null;
+            this._imageW = attributes ? attributes._imageW : null;
             this._depthTest = attributes ? attributes._depthTest : true;
             this._labelAttributes = attributes ? new TextAttributes(attributes._labelAttributes) : new TextAttributes(null);
             this._drawLeaderLine = attributes ? attributes._drawLeaderLine : false;
@@ -84,9 +86,11 @@ define([
          */
         PlacemarkAttributes.prototype.computeStateKey = function () {
             return "ic " + this._imageColor.toHexString(true)
+                + " ih " + this._imageH
                 + " io " + this._imageOffset.toString()
                 + " is " + this._imageScale
                 + " ip " + this._imageSource
+                + " iw " + this._imageW
                 + " dt " + this._depthTest
                 + " la " + this._labelAttributes.stateKey
                 + " dll " + this._drawLeaderLine
@@ -127,6 +131,22 @@ define([
                 },
                 set: function (value) {
                     this._imageColor = value;
+                    this.stateKeyInvalid = true;
+                }
+            },
+
+            /**
+             * The image height.
+             * @type {Number}
+             * @default null
+             * @memberof PlacemarkAttributes.prototype
+             */
+            imageH: {
+                get: function () {
+                    return this._imageH;
+                },
+                set: function (value) {
+                    this._imageH = value;
                     this.stateKeyInvalid = true;
                 }
             },
@@ -182,6 +202,22 @@ define([
                 },
                 set: function (value) {
                     this._imageSource = value;
+                    this.stateKeyInvalid = true;
+                }
+            },
+
+            /**
+             * The image width.
+             * @type {Number}
+             * @default null
+             * @memberof PlacemarkAttributes.prototype
+             */
+            imageW: {
+                get: function () {
+                    return this._imageW;
+                },
+                set: function (value) {
+                    this._imageW = value;
                     this.stateKeyInvalid = true;
                 }
             },
@@ -261,3 +297,4 @@ define([
         return PlacemarkAttributes;
     })
 ;
+

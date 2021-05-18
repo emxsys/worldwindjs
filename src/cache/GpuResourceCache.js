@@ -238,10 +238,12 @@ define([
          * @param {String|ImageSource} imageSource The image source, either a {@link ImageSource} or a String
          * giving the URL of the image.
          * @param {GLenum} wrapMode Optional. Specifies the wrap mode of the texture. Defaults to gl.CLAMP_TO_EDGE
-         * @returns {Texture} The {@link Texture} created for the image if the specified image source is an
+         * @param {Number} w Optional. Specifies the width of the image. Some SVGs (e.g. Font Awesome) do not provide a width or height.
+         * @param {Number} h Optional. Specifies the height of the image. Some SVGs (e.g. Font Awesome) do not provide a width or height.
+         * Some * @returns {Texture} The {@link Texture} created for the image if the specified image source is an
          * {@link ImageSource}, otherwise null.
          */
-        GpuResourceCache.prototype.retrieveTexture = function (gl, imageSource, wrapMode) {
+        GpuResourceCache.prototype.retrieveTexture = function (gl, imageSource, wrapMode, w, h) {
             if (!imageSource) {
                 return null;
             }
@@ -261,6 +263,11 @@ define([
 
             image.onload = function () {
                 Logger.log(Logger.LEVEL_INFO, "Image retrieval succeeded: " + imageSource);
+
+                if (typeof(w) === "number" && w > 0)
+                  image.width = w;
+                if (typeof(h) === "number" && h > 0)
+                  image.height = h;
 
                 var texture = new Texture(gl, image, wrapMode);
 
@@ -290,3 +297,4 @@ define([
 
         return GpuResourceCache;
     });
+
