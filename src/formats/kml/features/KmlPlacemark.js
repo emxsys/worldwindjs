@@ -143,17 +143,14 @@ define([
             _outlineColor: Color.RED
         }));
 
-        if (style)
+        if (style.kmlIconStyle)
           {
-          if (style.kmlIconStyle)
+          if (style.kmlIconStyle.kmlIcon)
             {
-            if (style.kmlIconStyle.kmlIcon)
-              {
-              if (style.kmlIconStyle.kmlH && style.kmlIconStyle.kmlH > 0)
-                placemarkAttributes.imageH = style.kmlIconStyle.kmlH;
-              if (style.kmlIconStyle.kmlW && style.kmlIconStyle.kmlW > 0)
-                placemarkAttributes.imageW = style.kmlIconStyle.kmlW;
-              };
+            if (style.kmlIconStyle.kmlH && style.kmlIconStyle.kmlH > 0)
+              placemarkAttributes.imageH = style.kmlIconStyle.kmlH;
+            if (style.kmlIconStyle.kmlW && style.kmlIconStyle.kmlW > 0)
+              placemarkAttributes.imageW = style.kmlIconStyle.kmlW;
             };
           };
 
