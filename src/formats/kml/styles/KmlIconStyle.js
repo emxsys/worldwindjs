@@ -154,8 +154,9 @@ define([
 
         shapeOptions._imageScale = style.kmlScale || 1;
         shapeOptions._imageSource = style.kmlIcon && style.kmlIcon.kmlHref(fileCache) || null;
-        shapeOptions._imageH = style.kmlIcon && style.kmlIcon.kmlH || null;
-        shapeOptions._imageW = style.kmlIcon && style.kmlIcon.kmlW || null;
+        // if height or width are missing, set default to 32 like Google Earth
+        shapeOptions._imageH = style.kmlIcon && style.kmlIcon.kmlH || 32;
+        shapeOptions._imageW = style.kmlIcon && style.kmlIcon.kmlW || 32;
 
         return shapeOptions;
     };
