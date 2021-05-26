@@ -617,14 +617,14 @@ define(['../../error/ArgumentError',
                 if (configuration && configuration.eyeDistanceScalingThreshold) {
                     placemark.eyeDistanceScalingThreshold = configuration.eyeDistanceScalingThreshold;
                 }
-                if (configuration && configuration.highlightAttributes) {
-                    placemark.highlightAttributes = configuration.highlightAttributes;
-                }
                 if (configuration && configuration.imageRotation) {
                     placemark.imageRotation = configuration.imageRotation;
                 }
                 if (configuration && configuration.imageRotationReference) {
                     placemark.imageRotationReference = configuration.imageRotationReference;
+                }
+                if (configuration && configuration.highlightAttributes) {
+                    placemark.highlightAttributes = configuration.highlightAttributes;
                 }
                 if (configuration && configuration.pickDelegate) {
                     placemark.pickDelegate = configuration.pickDelegate;
@@ -693,14 +693,14 @@ define(['../../error/ArgumentError',
                     if (configuration && configuration.eyeDistanceScalingThreshold) {
                         placemark.eyeDistanceScalingThreshold = configuration.eyeDistanceScalingThreshold;
                     }
-                    if (configuration && configuration.highlightAttributes) {
-                        placemark.highlightAttributes = configuration.highlightAttributes;
-                    }
                     if (configuration && configuration.imageRotation) {
                         placemark.imageRotation = configuration.imageRotation;
                     }
                     if (configuration && configuration.imageRotationReference) {
                         placemark.imageRotationReference = configuration.imageRotationReference;
+                    }
+                    if (configuration && configuration.highlightAttributes) {
+                        placemark.highlightAttributes = configuration.highlightAttributes;
                     }
                     if (configuration && configuration.pickDelegate) {
                         placemark.pickDelegate = configuration.pickDelegate;
@@ -756,7 +756,7 @@ define(['../../error/ArgumentError',
                 }
 
                 var shape;
-                if (configuration && configuration.altitudeMode == WorldWind.CLAMP_TO_GROUND) {
+                if (configuration && configuration.altitudeMode === WorldWind.CLAMP_TO_GROUND) {
                   shape = new SurfacePolyline(
                     positions,
                     configuration && configuration.attributes ? configuration.attributes : null);
@@ -769,6 +769,15 @@ define(['../../error/ArgumentError',
                   } else {
                     shape.altitudeMode = WorldWind.ABSOLUTE;
                   }
+                }
+                if (configuration && configuration.highlightAttributes) {
+                    shape.highlightAttributes = configuration.highlightAttributes;
+                }
+                if (configuration && configuration.pickDelegate) {
+                    shape.pickDelegate = configuration.pickDelegate;
+                }
+                if (configuration && configuration.userProperties) {
+                    shape.userProperties = configuration.userProperties;
                 }
                 layer.addRenderable(shape);
             }
@@ -886,7 +895,7 @@ define(['../../error/ArgumentError',
                 }
 
                     var shape;
-                    if (configuration && configuration.altitudeMode == WorldWind.CLAMP_TO_GROUND) {
+                    if (configuration && configuration.altitudeMode === WorldWind.CLAMP_TO_GROUND) {
                       shape = new SurfacePolygon(
                         pBoundaries,
                         configuration && configuration.attributes ? configuration.attributes : null);
@@ -900,7 +909,7 @@ define(['../../error/ArgumentError',
                         shape.altitudeMode = WorldWind.ABSOLUTE;
                       }
                     }
-                    if (configuration.highlightAttributes) {
+                    if (configuration && configuration.highlightAttributes) {
                         shape.highlightAttributes = configuration.highlightAttributes;
                     }
                     if (configuration && configuration.pickDelegate) {
