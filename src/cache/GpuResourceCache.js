@@ -264,10 +264,15 @@ define([
             image.onload = function () {
                 Logger.log(Logger.LEVEL_INFO, "Image retrieval succeeded: " + imageSource);
 
+                // if only width is set, then scale the image based on width
+                if (typeof(h) === "number" && h > 0)
+                  {
+                  if (w == null)
+                    image.width = image.width / (image.height / h);
+                  image.height = h;
+                  };
                 if (typeof(w) === "number" && w > 0)
                   image.width = w;
-                if (typeof(h) === "number" && h > 0)
-                  image.height = h;
 
                 var texture = new Texture(gl, image, wrapMode);
 

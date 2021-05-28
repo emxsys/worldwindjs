@@ -154,9 +154,10 @@ define([
 
         shapeOptions._imageScale = style.kmlScale || 1;
         shapeOptions._imageSource = style.kmlIcon && style.kmlIcon.kmlHref(fileCache) || null;
-        // if height or width are missing, set default to 32 like Google Earth
-        shapeOptions._imageH = style.kmlIcon && style.kmlIcon.kmlH || 32;
-        shapeOptions._imageW = style.kmlIcon && style.kmlIcon.kmlW || 32;
+        // Set default height to 32 like Google Earth
+        // GpuResourceCache's image.onload() will scale image's width accordingly
+        shapeOptions._imageH = 32;
+        shapeOptions._imageW = null;
 
         return shapeOptions;
     };
