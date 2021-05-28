@@ -243,7 +243,7 @@ define([
          * Some * @returns {Texture} The {@link Texture} created for the image if the specified image source is an
          * {@link ImageSource}, otherwise null.
          */
-        GpuResourceCache.prototype.retrieveTexture = function (gl, imageSource, wrapMode, w, h) {
+        GpuResourceCache.prototype.retrieveTexture = function (gl, imageSource, wrapMode, initialWidth, initialHeight) {
             if (!imageSource) {
                 return null;
             }
@@ -264,19 +264,33 @@ define([
             image.onload = function () {
                 Logger.log(Logger.LEVEL_INFO, "Image retrieval succeeded: " + imageSource);
 
-                // if only width is set, then scale the image based on height
-                if (typeof(h) === "number" && h > 0)
+                // if only width is given, then scale the image based on height
+                if (typeof(initialHeight) === "number" && initialHeight > 0 && initialWidth == null)
                   {
-                  if (w == null)
-                    image.width = image.width / (image.height / h);
-                  image.height = h;
+                  image.width = image.width / (image.height / initialHeight);
+                  image.height = initialHeight;
                   };
-                // if only height is set, then scale the image based on width
-                if (typeof(w) === "number" && w > 0)
+                // if only height is given, then scale the image based on width
+                if (typeof(initialWidth) === "number" && initialWidth > 0 && initialHeight == null)
                   {
-                  if (h == null)
-                    image.height = image.height / (image.width / w);
-                  image.width = w;
+                  image.height = image.height / (image.width / initialWidth);
+                  image.width = initialWidth;
+                  };
+                // if both height and width are given, then scale according to greater value
+                if (typeof(initialWidth) === "number" && initialWidth > 0 && typeof(initialHeight) === "number" && initialHeight > 0)
+                  {
+                  var ratioH;
+                  var ratioW;
+                  var ratio;
+
+                  ratioH = image.height / initialHeight;
+                  ratioW = image.width / initialWidth;
+                  if (ratioH > ratioW)
+                    ratio = ratioH;
+                  else
+                    ratio = ratioW;
+                  image.height = image.height / ratio;
+                  image.width = image.width / ratio;
                   };
 
                 var texture = new Texture(gl, image, wrapMode);
