@@ -61,7 +61,7 @@ define([
                 : new Offset(WorldWind.OFFSET_FRACTION, 0.5, WorldWind.OFFSET_FRACTION, 0.5);
             this._imageScale = attributes ? attributes._imageScale : 1;
             this._imageSource = attributes ? attributes._imageSource : null;
-            this._imageInitialW = attributes ? attributes._imageInitialW : null;
+            this._imageInitialWidth = attributes ?  attributes._imageInitialWidth : null;
             this._depthTest = attributes ? attributes._depthTest : true;
             this._labelAttributes = attributes ? new TextAttributes(attributes._labelAttributes) : new TextAttributes(null);
             this._drawLeaderLine = attributes ? attributes._drawLeaderLine : false;
