@@ -56,12 +56,12 @@ define([
         var PlacemarkAttributes = function (attributes) {
             // These are all documented with their property accessors below.
             this._imageColor = attributes ? attributes._imageColor.clone() : Color.WHITE.clone();
-            this._imageH = attributes ? attributes._imageH : null;
+            this._imageInitialHeight = attributes ?  attributes._imageInitialHeight : null;
             this._imageOffset = attributes ? attributes._imageOffset
                 : new Offset(WorldWind.OFFSET_FRACTION, 0.5, WorldWind.OFFSET_FRACTION, 0.5);
             this._imageScale = attributes ? attributes._imageScale : 1;
             this._imageSource = attributes ? attributes._imageSource : null;
-            this._imageW = attributes ? attributes._imageW : null;
+            this._imageInitialW = attributes ? attributes._imageInitialW : null;
             this._depthTest = attributes ? attributes._depthTest : true;
             this._labelAttributes = attributes ? new TextAttributes(attributes._labelAttributes) : new TextAttributes(null);
             this._drawLeaderLine = attributes ? attributes._drawLeaderLine : false;
@@ -86,11 +86,11 @@ define([
          */
         PlacemarkAttributes.prototype.computeStateKey = function () {
             return "ic " + this._imageColor.toHexString(true)
-                + " ih " + this._imageH
+                + " iih " + this._imageInitialHeight
                 + " io " + this._imageOffset.toString()
                 + " is " + this._imageScale
                 + " ip " + this._imageSource
-                + " iw " + this._imageW
+                + " iiw " + this._imageInitialWidth
                 + " dt " + this._depthTest
                 + " la " + this._labelAttributes.stateKey
                 + " dll " + this._drawLeaderLine
@@ -136,17 +136,17 @@ define([
             },
 
             /**
-             * The image height.
+             * The initial image height.
              * @type {Number}
              * @default null
              * @memberof PlacemarkAttributes.prototype
              */
-            imageH: {
+            initialImageHeight: {
                 get: function () {
-                    return this._imageH;
+                    return this._imageInitialHeight;
                 },
                 set: function (value) {
-                    this._imageH = value;
+                    this._imageInitialHeight = value;
                     this.stateKeyInvalid = true;
                 }
             },
@@ -212,12 +212,12 @@ define([
              * @default null
              * @memberof PlacemarkAttributes.prototype
              */
-            imageW: {
+            imageInitialW: {
                 get: function () {
-                    return this._imageW;
+                    return this._imageInitialW;
                 },
                 set: function (value) {
-                    this._imageW = value;
+                    this._imageInitialW = value;
                     this.stateKeyInvalid = true;
                 }
             },

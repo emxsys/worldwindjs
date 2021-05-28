@@ -539,7 +539,7 @@ define([
 
                 if (!this.activeTexture || this.updateImage) {
                     this.activeTexture = dc.gpuResourceCache.retrieveTexture(dc.currentGlContext,
-                        this.activeAttributes.imageSource, null, this.activeAttributes._imageW, this.activeAttributes._imageH);
+                        this.activeAttributes.imageSource, null, this.activeAttributes._imageInitialWidth, this.activeAttributes._imageInitialHeight);
                     this.updateImage = false;
                 }
             }
