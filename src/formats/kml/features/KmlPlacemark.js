@@ -143,6 +143,15 @@ define([
             _outlineColor: Color.RED
         }));
 
+        if (style)
+          {
+          if (style.kmlIconStyle)
+            {
+            if (style.kmlIconStyle.kmlColor)
+              placemarkAttributes.imageColor = Color.colorFromKmlHex(style.kmlIconStyle.kmlColor);
+            };
+          };
+
         return placemarkAttributes;
     };
 
@@ -167,3 +176,4 @@ define([
 
     return KmlPlacemark;
 });
+
