@@ -176,14 +176,53 @@ define([
                 hideEyeAlt = true;
             }
 
+            var decimals;
+            var xspace;
+
+            if (lookAt.range >= 40000e3)
+              {
+              decimals = 0;
+              xspace = 60;
+              }
+            else if (lookAt.range >= 5000e3)
+              {
+              decimals = 1;
+              xspace = 70;
+              }
+            else if (lookAt.range >= 400e3)
+              {
+              decimals = 2;
+              xspace = 80;
+              }
+            else if (lookAt.range >= 50e3)
+              {
+              decimals = 3;
+              xspace = 90;
+              }
+            else if (lookAt.range >= 4000)
+              {
+              decimals = 4;
+              xspace = 100;
+              }
+            else if (lookAt.range >= 500)
+              {
+              decimals = 5;
+              xspace = 110;
+              }
+            else
+              {
+              decimals = 6;
+              xspace = 120;
+              };
+
             // TODO can we control terrain position visibility with Text's targetVisibility?
-            this.latText.text = terrainPos ? this.formatLatitude(terrainPos.latitude) : null;
+            this.latText.text = terrainPos ? this.formatLatitude(terrainPos.latitude, decimals) : null;
             this.latText.screenOffset = new Offset(WorldWind.OFFSET_PIXELS, x, yUnitsScreen, y);
             this.latText.attributes.offset = new Offset(WorldWind.OFFSET_FRACTION, 1, WorldWind.OFFSET_FRACTION, yUnitsText);
             this.latText.render(dc);
 
-            x += 70;
-            this.lonText.text = terrainPos ? this.formatLongitude(terrainPos.longitude) : null;
+            x += xspace;
+            this.lonText.text = terrainPos ? this.formatLongitude(terrainPos.longitude, decimals) : null;
             this.lonText.screenOffset = new Offset(WorldWind.OFFSET_PIXELS, x, yUnitsScreen, y);
             this.lonText.attributes.offset = new Offset(WorldWind.OFFSET_FRACTION, 1, WorldWind.OFFSET_FRACTION, yUnitsText);
             this.lonText.render(dc);
@@ -258,15 +297,15 @@ define([
         };
 
         // Intentionally not documented.
-        CoordinatesDisplayLayer.prototype.formatLatitude = function (number) {
+        CoordinatesDisplayLayer.prototype.formatLatitude = function (number, decimals) {
             var suffix = number < 0 ? "\u00b0S" : "\u00b0N";
-            return Math.abs(number).toFixed(2) + suffix;
+            return Math.abs(number).toFixed(decimals) + suffix;
         };
 
         // Intentionally not documented.
-        CoordinatesDisplayLayer.prototype.formatLongitude = function (number) {
+        CoordinatesDisplayLayer.prototype.formatLongitude = function (number, decimals) {
             var suffix = number < 0 ? "\u00b0W" : "\u00b0E";
-            return Math.abs(number).toFixed(2) + suffix;
+            return Math.abs(number).toFixed(decimals) + suffix;
         };
 
         // Intentionally not documented.
