@@ -45952,36 +45952,33 @@ define('layer/CoordinatesDisplayLayer',[
 
             var decimals;
             var xspace;
-            var hat; // height above terrain
 
-            hat = eyePos.altitude - (terrainPos ? terrainPos.altitude : 0);
-
-            if (hat >= 40000e3)
+            if (lookAt.range >= 40000e3)
               {
               decimals = 0;
               xspace = 60;
               }
-            else if (hat >= 5000e3)
+            else if (lookAt.range >= 5000e3)
               {
               decimals = 1;
               xspace = 70;
               }
-            else if (hat >= 400e3)
+            else if (lookAt.range >= 400e3)
               {
               decimals = 2;
               xspace = 80;
               }
-            else if (hat >= 50e3)
+            else if (lookAt.range >= 50e3)
               {
               decimals = 3;
               xspace = 90;
               }
-            else if (hat >= 4000)
+            else if (lookAt.range >= 4000)
               {
               decimals = 4;
               xspace = 100;
               }
-            else if (hat >= 500)
+            else if (lookAt.range >= 500)
               {
               decimals = 5;
               xspace = 110;
